@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react'
 import './globals.css'
 import { Inter } from 'next/font/google'
+import {cn} from 'common/helpers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,7 +13,7 @@ export const metadata = {
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={cn(inter.className, 'bg-gray-100 h-[100dvh]')}>{children}</body>
     </html>
   )
 }
