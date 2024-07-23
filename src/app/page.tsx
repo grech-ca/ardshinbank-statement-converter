@@ -21,10 +21,19 @@ const Home = () => {
     const formData = new FormData()
     formData.append('file', file)
 
-    await fetch('/api/upload', {
+    const blob = await fetch('/api/upload', {
       method: 'POST',
       body: formData,
-    }).then(res => res.json())
+    }).then(res => res.blob())
+
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.download = 'new-statement.csv'
+    a.style.display = 'none'
+    a.href = url
+    document.body.appendChild(a)
+    a.click()
+    window.URL.revokeObjectURL(url)
   }
 
   return (
@@ -37,25 +46,27 @@ const Home = () => {
           control={control}
           name="file"
           render={({field: {value, onChange}}) => (
-            value ? (
-              <div className="grid p-4 border-dashed border-2 rounded-lg">
-                <div>{value.name}</div>
-              </div>
-            ) : (
-              <Dropzone
-                onDrop={files => onChange(files[0])}
-                accept={{application: [".csv"]}}
-              >
-                {({getRootProps, getInputProps, isDragActive}) => (
-                  <div
-                    {...getRootProps()}
-                    className={cn(
-                      'flex items-center justify-center border-4 p-10 rounded-lg border-dashed border-gray-300 cursor-pointer',
-                      'transition-all active:scale-95 active:border-black group',
-                      {'scale-95 border-black': isDragActive}
-                    )}
-                  >
-                    <input {...getInputProps()}/>
+            <Dropzone
+              onDrop={files => onChange(files[0])}
+              accept={{text: ["csv"]}}
+            >
+              {({getRootProps, getInputProps, isDragActive}) => (
+                <div
+                  {...getRootProps()}
+                  className={cn(
+                    'flex items-center justify-center rounded-lg border-dashed border-gray-300 cursor-pointer',
+                    'transition-all active:scale-95 active:border-black group',
+                    {
+                      'scale-95 border-black': isDragActive,
+                      'p-10 border-4': !value,
+                      'p-4 border-2': value,
+                    }
+                  )}
+                >
+                  <input {...getInputProps()}/>
+                  {value ? (
+                    <div>{value.name}</div>
+                  ) : (
                     <p
                       className={cn(
                         'text-center text-lg font-medium text-gray-400',
@@ -65,10 +76,10 @@ const Home = () => {
                     >
                       {`Drag'n'drop file here`}
                     </p>
-                  </div>
-                )}
-              </Dropzone>
-            )
+                  )}
+                </div>
+              )}
+            </Dropzone>
           )}
         />
 

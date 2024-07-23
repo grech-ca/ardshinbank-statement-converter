@@ -1,1 +1,6 @@
 export * from './cn'
+export * from './csv-to-matrix'
+export * from './matrix-to-csv'
+export * from './remove-columns'
+export * from './remove-rows'
+export * from './fix-date'
